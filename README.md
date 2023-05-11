@@ -256,3 +256,5 @@
 member.getGrade() == Grade.VIP
 ```
 => Enum은 ==으로 비교 가능
+
+## 주문과 할인 도메인 실행과 테스트
