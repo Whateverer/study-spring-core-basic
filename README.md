@@ -347,3 +347,5 @@ public class OrderServiceImpl implements OrderService {
 - AppConfig는 구체 클래스를 선택한다. 배역에 맞는 담당 배우를 선택한다. 애플리케이션이 어떻게 동작해야 할지 전체 구성을 책임진다.
 - 이제 각 배우들은 담당 기능을 실행하는 책임만 지면 된다.
 - ```OrderServiceImpl```은 기능을 실행하는 책임만 지면 된다.
+
+## AppConfig 리팩터링
