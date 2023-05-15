@@ -511,3 +511,6 @@ ApplicationContext applicationContext = new AnnotationConfigApplicationContext(A
   - 스프링이 내부에서 사용하는 빈은 ```ac.getRole()```로 구분할 수 있다.
     - ```ROLE_APPLICATION``` : 일반적으로 사용자가 정의한 빈
     - ```ROLE_INFRASTRUCTURE``` : 스프링이 내부에서 사용하는 빈
+
+## 스프링 빈 조회 - 기본
+스프링 컨테이너에서 스프링 빈을 찾는 가장 기본적인 조회 방법
