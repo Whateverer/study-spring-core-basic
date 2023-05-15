@@ -500,3 +500,14 @@ ApplicationContext applicationContext = new AnnotationConfigApplicationContext(A
 **정리**
 스프링 컨테이너를 생성하고, 설정(구성) 정보를 참고해서 스프링 빈도 등록하고, 의존관계도 설정했다.
 이제 스프링 컨테이너에서 데이터를 조회해보자.
+
+## 컨테이너에 등록된 모든 빈 조회
+- 모든 빈 출력하기
+  - 실행하면 스프링에 등록된 모든 빈 정보를 출력할 수 있다.
+  - ```ac.getBeanDefinitionNames()``` : 스프링에 등록된 모든 빈 이름을 조회한다.
+  - ```ac.getBean()``` : 빈 이름으로 빈 객체(인스턴스)를 조회한다.
+- 애플리케이션 빈 출력하기
+  - 스프링이 내부에서 사용하는 빈은 제외하고, 내가 등록한 빈만 출력해보자.
+  - 스프링이 내부에서 사용하는 빈은 ```ac.getRole()```로 구분할 수 있다.
+    - ```ROLE_APPLICATION``` : 일반적으로 사용자가 정의한 빈
+    - ```ROLE_INFRASTRUCTURE``` : 스프링이 내부에서 사용하는 빈
