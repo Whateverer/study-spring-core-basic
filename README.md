@@ -514,3 +514,9 @@ ApplicationContext applicationContext = new AnnotationConfigApplicationContext(A
 
 ## 스프링 빈 조회 - 기본
 스프링 컨테이너에서 스프링 빈을 찾는 가장 기본적인 조회 방법
+
+## 스프링 빈 조회 - 동일한 타입이 둘 이상
+- 타입으로 조회 시 같은 타입의 스프링 빈이 둘 이상이면 오류가 발생한다. 이때는 빈 이름을 지정하자.
+- ```ac.getBeanOfType()```을 사용하면 해당 타입의 모든 빈을 조회할 수 있다.
+
+##
