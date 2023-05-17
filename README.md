@@ -681,3 +681,33 @@ MemberService memberService() {
 ## @Configuration과 싱글톤
 - 확인해보면 memberRepository 인스턴스는 모두 같은 인스턴스가 공유되어 사용된다.
 - AppConfig의 자바 코드를 보면 분명히 각각 2번 ```new MemoryMemberRepository()``` 호출해서 다른 인스턴스가 생성되어야 하는데?
+
+
+## @Configuration과 바이트코드 조작의 마법
+스프링 컨테이너는 싱글톤 레지스트리다. 따라서 스프링 빈이 싱글톤이 되도록 보장해주어야 한다. 그런데 스프링이 자바 코드까지 어떻게 하기는 어렵다. 저 자바 코드를 보면 분명 3번 호출되어야하는 것이 맞다.
+그래서 스프링은 클래스의 바이트 코드를 조작하는 라이브러리를 사용한다. 
+모든 비밀은 ```@Configuration```을 적용한 ```AppConfig```에 있다.
+
+- 사실 ```AnnotationConfigApplicationContext```에 파라미터로 넘긴 값은 스프링 빈으로 등록된다. 그래서 ```AppConfig```도 스프링 빈이 된다.
+- ```AppConfig``` 스프링 빈을 조회해서 클래스 정보를 출력해보자.
+```
+bean = class hello.core.AppConfig$$EnhancerBySpringCGLIB$$337db659
+```
+순수한 클래스라면 다음과 같이 출력되어야 한다.
+```
+class hello.core.AppConfig
+```
+그런데 예상과는 다르게 클래스 명에 xxxCGLIB가 붙으면서 상당히 복잡해진 것을 볼 수 있다. 이것은 내가 만든 클래스가 아니라 스프링이 CGLIB라는 바이트코드 조작 라이브러리를 사용해서 AppConfig 클래스를 상속받은 임의의 다른 클래스를 만들고, 그 다른 클래스를 스프링 빈으로 등록한 것이다.
+그 임의의 다른 클래스가 바로 싱글톤이 보장되도록 해준다.
+- @Bean이 붙은 메서드마다 이미 스프링 빈이 존재하면 빈을 반환하고, 스프링 빈이 없으면 생성해서 스프링 빈으로 등록하고 반환하는 코드가 동적으로 만들어진다.
+- 덕분에 싱글톤이 보장되는 것이다.
+> 참고 AppConfig@CGLIB는 AppConfig의 자식 타입이므로, AppConfig 타입으로 조회할 수 있다.
+
+### @Configuration을 적용하지 않고 @Bean만 적용하면 어떻게 될까?
+```@Configuration```을 붙이면 바이트코드를 조작하는 CGLIB 기술을 사용해서 싱글톤을 보장하지만, 만약 @Bean만 적용하면?
+이 출력 결과를 통해서 MemberRepository가 총 3번 호출된 것을 알 수 있다. (싱글톤이 보장되지 않는다.)
+
+**정리**
+- ```@Bean```만 사용해도 스프링 빈으로 등록되지만, 싱글톤을 보장하지 않는다.
+  - ```memberRepository()```처럼 의존관계 주입이 필요해서 메서드를 직접 호출할 때 싱글톤을 보장하지 않는다.
+- 크게 고미할 것이 없다. 스프링 설정 정보는 항상 ```@Configuration```을 사용하자.
